@@ -1,6 +1,7 @@
 package com.jszipcoders.moneymanager.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class UserEntity {

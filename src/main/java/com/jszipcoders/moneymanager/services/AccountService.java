@@ -1,6 +1,6 @@
 package com.jszipcoders.moneymanager.services;
 
-import com.jszipcoders.moneymanager.respositories.AccountRepository;
+import com.jszipcoders.moneymanager.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

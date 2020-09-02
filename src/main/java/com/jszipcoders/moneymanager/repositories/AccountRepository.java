@@ -1,4 +1,4 @@
-package com.jszipcoders.moneymanager.respositories;
+package com.jszipcoders.moneymanager.repositories;
 
 import com.jszipcoders.moneymanager.entities.AccountEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
