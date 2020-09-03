@@ -12,19 +12,19 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String ssn;
-    private Address address;
+    private String address;
     private String email;
     private String phoneNumber;
     private String username;
     private String password;
-    @OneToMany
+    @OneToMany(mappedBy = "userentity")
     private List<AccountEntity> accounts;
 
     public UserEntity() {
         this(null,null,null,null,null,null,null,null,null,null);
     }
 
-    public UserEntity(Long userId, String firstName, String lastName, String ssn, Address address, String email, String phoneNumber, String username, String password, List<AccountEntity> accounts) {
+    public UserEntity(Long userId, String firstName, String lastName, String ssn, String address, String email, String phoneNumber, String username, String password, List<AccountEntity> accounts) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -69,11 +69,11 @@ public class UserEntity {
         this.ssn = ssn;
     }
 
-    public Address getAddress() {
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
