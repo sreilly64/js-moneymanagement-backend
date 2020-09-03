@@ -38,4 +38,10 @@ public class UserService {
             return userEntity;
         }
     }
+
+    public UserEntity deleteUserById(Long user_id) {
+        UserEntity userEntity = userRepo.findById(user_id).get();
+        userRepo.deleteById(user_id);
+        return userEntity;
+    }
 }
