@@ -10,7 +10,8 @@ public class AccountEntity {
     private Long accountNumber;
     private AccountType type;
     @OneToOne
-    private Long userId;
+    @JoinColumn(name = "userId")
+    private UserEntity accountOwner;
     private Double balance;
     private final Integer routingNumber = 394058927;
 
@@ -18,10 +19,10 @@ public class AccountEntity {
         this(null, null, null, null);
     }
 
-    public AccountEntity(Long accountNumber, AccountType type, Long userId, Double balance) {
+    public AccountEntity(Long accountNumber, AccountType type, UserEntity accountOwner, Double balance) {
         this.accountNumber = accountNumber;
         this.type = type;
-        this.userId = userId;
+        this.accountOwner = accountOwner;
         this.balance = balance;
     }
 
@@ -41,12 +42,12 @@ public class AccountEntity {
         this.type = type;
     }
 
-    public Long getUserId() {
-        return userId;
+    public UserEntity getAccountOwner() {
+        return accountOwner;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setAccountOwner(UserEntity accountOwner) {
+        this.accountOwner = accountOwner;
     }
 
     public Double getBalance() {
