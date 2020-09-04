@@ -17,7 +17,7 @@ public class UserEntity {
     private String phoneNumber;
     private String username;
     private String password;
-    @OneToMany(mappedBy = "userentity")
+    @OneToMany(mappedBy = "accountOwner")
     private List<AccountEntity> accounts;
 
     public UserEntity() {

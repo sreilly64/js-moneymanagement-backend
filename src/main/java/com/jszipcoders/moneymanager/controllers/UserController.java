@@ -65,17 +65,17 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/users/{user_id}")
-    public ResponseEntity<UserEntity> deleteUserById(@PathVariable Long user_id){
-        UserEntity userEntity = null;
+    public ResponseEntity<Boolean> deleteUserById(@PathVariable Long user_id){
+        Boolean userDeleted = null;
         try{
-            userEntity = userService.deleteUserById(user_id);
+            userDeleted = userService.deleteUserById(user_id);
         }catch(Exception e){
             LOGGER.info(e.getMessage(), e);
         }
-        if(userEntity == null){
+        if(userDeleted == null){
             return ResponseEntity.notFound().build();
         }else{
-            return new ResponseEntity<UserEntity>(userEntity, HttpStatus.OK);
+            return new ResponseEntity<Boolean>(userDeleted, HttpStatus.OK);
         }
     }
 

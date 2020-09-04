@@ -39,9 +39,13 @@ public class UserService {
         }
     }
 
-    public UserEntity deleteUserById(Long user_id) {
-        UserEntity userEntity = userRepo.findById(user_id).get();
+    public Boolean deleteUserById(Long user_id) {
+        UserEntity userEntity = userRepo.findById(user_id).orElse(null);
         userRepo.deleteById(user_id);
-        return userEntity;
+        if(userEntity != null){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
