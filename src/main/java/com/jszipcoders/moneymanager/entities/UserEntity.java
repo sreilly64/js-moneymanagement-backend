@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "USERENTITY")
 public class UserEntity {
 
     @Id
@@ -17,6 +18,7 @@ public class UserEntity {
     private String phoneNumber;
     private String username;
     private String password;
+
     @OneToMany(mappedBy = "accountOwner")
     private List<AccountEntity> accounts;
 

@@ -3,12 +3,14 @@ package com.jszipcoders.moneymanager.entities;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "ACCOUNTENTITY")
 public class AccountEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long accountNumber;
     private AccountType type;
+
     @OneToOne
     @JoinColumn(name = "userId")
     private UserEntity accountOwner;
