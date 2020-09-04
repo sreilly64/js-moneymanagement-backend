@@ -4,29 +4,43 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "USERENTITY")
+@Table(name = "userentity", schema = "public")
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userid", columnDefinition = "serial")
     private Long userId;
+
+    @Column(name = "firstname")
     private String firstName;
+
+    @Column(name = "lastname")
     private String lastName;
+
+    @Column(name = "ssn")
     private String ssn;
+
+    @Column(name = "address")
     private String address;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "phonenumber")
     private String phoneNumber;
+
+    @Column(name = "username")
     private String username;
+
+    @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "accountOwner")
-    private List<AccountEntity> accounts;
-
     public UserEntity() {
-        this(null,null,null,null,null,null,null,null,null,null);
+        this(null,null,null,null,null,null,null,null,null);
     }
 
-    public UserEntity(Long userId, String firstName, String lastName, String ssn, String address, String email, String phoneNumber, String username, String password, List<AccountEntity> accounts) {
+    public UserEntity(Long userId, String firstName, String lastName, String ssn, String address, String email, String phoneNumber, String username, String password) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -36,7 +50,6 @@ public class UserEntity {
         this.phoneNumber = phoneNumber;
         this.username = username;
         this.password = password;
-        this.accounts = accounts;
     }
 
     public Long getUserId() {
@@ -111,11 +124,4 @@ public class UserEntity {
         this.password = password;
     }
 
-    public List<AccountEntity> getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(List<AccountEntity> accounts) {
-        this.accounts = accounts;
-    }
 }

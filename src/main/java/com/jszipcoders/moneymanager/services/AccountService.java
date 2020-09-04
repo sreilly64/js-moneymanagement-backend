@@ -24,7 +24,7 @@ public class AccountService {
 
     public List<AccountEntity> findAllAccountsByUserId(Long user_id) {
         List<AccountEntity> listOfAccounts = this.accountRepository.findAll();
-        return listOfAccounts.stream().filter(a -> a.getAccountOwner().getUserId() == user_id).collect(Collectors.toList());
+        return listOfAccounts.stream().filter(a -> a.getUserId() == user_id).collect(Collectors.toList());
     }
 
     public Double updateBalance(Long account_number, Double amount){

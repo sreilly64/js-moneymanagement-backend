@@ -32,7 +32,6 @@ public class UserService {
             userEntity.setEmail(updatedUser.getEmail());
             userEntity.setPhoneNumber(updatedUser.getPhoneNumber());
             userEntity.setPassword(updatedUser.getPassword());
-            userEntity.setAccounts(updatedUser.getAccounts());
             return userRepo.save(userEntity);
         }else{
             return userEntity;
