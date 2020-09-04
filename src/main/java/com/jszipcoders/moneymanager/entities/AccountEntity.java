@@ -3,26 +3,34 @@ package com.jszipcoders.moneymanager.entities;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "accountentity", schema = "public")
 public class AccountEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "accountnumber", columnDefinition = "serial")
     private Long accountNumber;
+
+    @Column(name = "type")
     private AccountType type;
-    @OneToOne
-    @JoinColumn(name = "userId")
-    private UserEntity accountOwner;
+
+    @Column(name = "userid")
+    private Long userId;
+
+    @Column(name = "balance")
     private Double balance;
+
+    @Column(name = "routingnumber")
     private final Integer routingNumber = 394058927;
 
     public AccountEntity() {
         this(null, null, null, null);
     }
 
-    public AccountEntity(Long accountNumber, AccountType type, UserEntity accountOwner, Double balance) {
+    public AccountEntity(Long accountNumber, AccountType type, Long userId, Double balance) {
         this.accountNumber = accountNumber;
         this.type = type;
-        this.accountOwner = accountOwner;
+        this.userId = userId;
         this.balance = balance;
     }
 
@@ -42,12 +50,12 @@ public class AccountEntity {
         this.type = type;
     }
 
-    public UserEntity getAccountOwner() {
-        return accountOwner;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setAccountOwner(UserEntity accountOwner) {
-        this.accountOwner = accountOwner;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Double getBalance() {
