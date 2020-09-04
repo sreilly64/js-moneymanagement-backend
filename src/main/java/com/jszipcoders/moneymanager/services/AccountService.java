@@ -38,7 +38,7 @@ public class AccountService {
     }
 
     public boolean deleteAccount(Long account_number) {
-        AccountEntity account = accountRepository.findById(account_number).get();
+        AccountEntity account = accountRepository.findById(account_number).orElse(null);
         accountRepository.deleteById(account_number);
         if(account == null) {
             return false;
