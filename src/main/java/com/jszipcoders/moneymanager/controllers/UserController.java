@@ -23,13 +23,13 @@ public class UserController {
     }
 
     @PostMapping(value = "/users")
-    public ResponseEntity<UserEntity> addUser(@RequestBody UserEntity newUser){
+    public ResponseEntity<?> addUser(@RequestBody UserEntity newUser){
         UserEntity userEntity = null;
         try{
             userEntity = userService.addUser(newUser);
         }catch (Exception e){
             LOGGER.info(e.getMessage(), e);
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<UserEntity>(userEntity, HttpStatus.CREATED);
     }
@@ -41,27 +41,25 @@ public class UserController {
             userEntity = userService.findUserById(user_id);
         }catch(Exception e){
             LOGGER.info(e.getMessage(), e);
-        }
-        if(userEntity == null){
             return ResponseEntity.notFound().build();
-        }else{
-            return new ResponseEntity<UserEntity>(userEntity, HttpStatus.OK);
         }
+        return new ResponseEntity<UserEntity>(userEntity, HttpStatus.OK);
     }
 
     @PutMapping(value = "/users/{user_id}")
-    public ResponseEntity<UserEntity> updateUserDetails(@PathVariable Long user_id, @RequestBody UserEntity updatedUser){
+    public ResponseEntity<?> updateUserDetails(@PathVariable Long user_id, @RequestBody UserEntity updatedUser){
         UserEntity userEntity = null;
         try{
             userEntity = userService.updateUserDetails(user_id, updatedUser);
-        }catch(Exception e){
+        }catch (IllegalArgumentException e){
             LOGGER.info(e.getMessage(), e);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        if(userEntity == null){
+        catch(Exception e){
+            LOGGER.info(e.getMessage(), e);
             return ResponseEntity.notFound().build();
-        }else{
-            return new ResponseEntity<UserEntity>(userEntity, HttpStatus.OK);
         }
+        return new ResponseEntity<UserEntity>(userEntity, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/users/{user_id}")
@@ -71,12 +69,9 @@ public class UserController {
             userDeleted = userService.deleteUserById(user_id);
         }catch(Exception e){
             LOGGER.info(e.getMessage(), e);
+            return new ResponseEntity<Boolean>(false, HttpStatus.NOT_FOUND);
         }
-        if(userDeleted == null){
-            return ResponseEntity.notFound().build();
-        }else{
-            return new ResponseEntity<Boolean>(userDeleted, HttpStatus.OK);
-        }
+        return new ResponseEntity<Boolean>(userDeleted, HttpStatus.OK);
     }
 
 }
