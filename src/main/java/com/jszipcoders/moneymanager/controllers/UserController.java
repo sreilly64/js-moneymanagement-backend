@@ -23,13 +23,13 @@ public class UserController {
     }
 
     @PostMapping(value = "/users")
-    public ResponseEntity<UserEntity> addUser(@RequestBody UserEntity newUser){
+    public ResponseEntity<?> addUser(@RequestBody UserEntity newUser){
         UserEntity userEntity = null;
         try{
             userEntity = userService.addUser(newUser);
         }catch (Exception e){
             LOGGER.info(e.getMessage(), e);
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<UserEntity>(userEntity, HttpStatus.CREATED);
     }
@@ -47,11 +47,15 @@ public class UserController {
     }
 
     @PutMapping(value = "/users/{user_id}")
-    public ResponseEntity<UserEntity> updateUserDetails(@PathVariable Long user_id, @RequestBody UserEntity updatedUser){
+    public ResponseEntity<?> updateUserDetails(@PathVariable Long user_id, @RequestBody UserEntity updatedUser){
         UserEntity userEntity = null;
         try{
             userEntity = userService.updateUserDetails(user_id, updatedUser);
-        }catch(Exception e){
+        }catch (IllegalArgumentException e){
+            LOGGER.info(e.getMessage(), e);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch(Exception e){
             LOGGER.info(e.getMessage(), e);
             return ResponseEntity.notFound().build();
         }
