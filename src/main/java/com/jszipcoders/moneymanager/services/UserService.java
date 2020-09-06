@@ -16,6 +16,7 @@ public class UserService {
     }
 
     public UserEntity addUser(UserEntity newUser) {
+        List<User>
         return userRepo.save(newUser);
     }
 

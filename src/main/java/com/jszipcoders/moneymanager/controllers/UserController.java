@@ -41,12 +41,9 @@ public class UserController {
             userEntity = userService.findUserById(user_id);
         }catch(Exception e){
             LOGGER.info(e.getMessage(), e);
-        }
-        if(userEntity == null){
             return ResponseEntity.notFound().build();
-        }else{
-            return new ResponseEntity<UserEntity>(userEntity, HttpStatus.OK);
         }
+        return new ResponseEntity<UserEntity>(userEntity, HttpStatus.OK);
     }
 
     @PutMapping(value = "/users/{user_id}")
@@ -56,12 +53,9 @@ public class UserController {
             userEntity = userService.updateUserDetails(user_id, updatedUser);
         }catch(Exception e){
             LOGGER.info(e.getMessage(), e);
-        }
-        if(userEntity == null){
             return ResponseEntity.notFound().build();
-        }else{
-            return new ResponseEntity<UserEntity>(userEntity, HttpStatus.OK);
         }
+        return new ResponseEntity<UserEntity>(userEntity, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/users/{user_id}")
@@ -71,12 +65,9 @@ public class UserController {
             userDeleted = userService.deleteUserById(user_id);
         }catch(Exception e){
             LOGGER.info(e.getMessage(), e);
+            return new ResponseEntity<Boolean>(false, HttpStatus.NOT_FOUND);
         }
-        if(userDeleted == null){
-            return ResponseEntity.notFound().build();
-        }else{
-            return new ResponseEntity<Boolean>(userDeleted, HttpStatus.OK);
-        }
+        return new ResponseEntity<Boolean>(userDeleted, HttpStatus.OK);
     }
 
 }
