@@ -23,6 +23,7 @@ public class AccountService {
     }
 
     public List<AccountEntity> findAllAccountsByUserId(Long user_id) {
+        accountRepository.findById(user_id).get();
         List<AccountEntity> listOfAccounts = this.accountRepository.findAll();
         return listOfAccounts.stream().filter(a -> a.getUserId() == user_id).collect(Collectors.toList());
     }
