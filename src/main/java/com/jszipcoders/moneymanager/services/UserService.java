@@ -57,6 +57,7 @@ public class UserService {
         userEntity.setPassword(updatedUser.getPassword());
 
         checkIfUserDetailsAreTaken(userEntity);
+
         return userRepo.save(userEntity);
     }
 
