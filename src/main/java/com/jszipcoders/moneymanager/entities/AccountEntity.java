@@ -1,6 +1,7 @@
 package com.jszipcoders.moneymanager.entities;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "accountentity", schema = "public")
@@ -68,5 +69,22 @@ public class AccountEntity {
 
     public Integer getRoutingNumber() {
         return routingNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AccountEntity that = (AccountEntity) o;
+        return Objects.equals(accountNumber, that.accountNumber) &&
+                type == that.type &&
+                Objects.equals(userId, that.userId) &&
+                Objects.equals(balance, that.balance) &&
+                Objects.equals(routingNumber, that.routingNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountNumber, type, userId, balance, routingNumber);
     }
 }
