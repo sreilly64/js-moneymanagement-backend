@@ -1,10 +1,13 @@
 package com.jszipcoders.moneymanager.controllers;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.jszipcoders.moneymanager.entities.AuthenticationRequest;
 import com.jszipcoders.moneymanager.entities.AuthenticationResponse;
 import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.services.UserService;
 import com.jszipcoders.moneymanager.util.JwtUtil;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,8 +107,12 @@ public class UserController {
         try{
             user = userService.userLogin(authRequest.getUsername(), authRequest.getPassword());
         } catch (AuthenticationException e){
+            String message = e.getMessage();
+            JSONObject json = new JSONObject();
+            json.put("message", message);
+
             LOGGER.info(e.getMessage(), e);
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
         }
         String jwt = jwtUtil.generateToken(user);
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
