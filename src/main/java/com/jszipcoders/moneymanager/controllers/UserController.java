@@ -1,12 +1,19 @@
 package com.jszipcoders.moneymanager.controllers;
 
+import com.jszipcoders.moneymanager.entities.AuthenticationRequest;
+import com.jszipcoders.moneymanager.entities.AuthenticationResponse;
 import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.services.UserService;
+import com.jszipcoders.moneymanager.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +23,14 @@ public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     private UserService userService;
+    private AuthenticationManager authenticationManager;
+    private JwtUtil jwtUtil;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping(value = "/users")
@@ -72,6 +83,20 @@ public class UserController {
             return new ResponseEntity<Boolean>(false, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<Boolean>(userDeleted, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/users/authenticate")
+    public ResponseEntity<?> createAuthToken(@RequestBody AuthenticationRequest authRequest) throws Exception {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+            );
+        } catch (BadCredentialsException e){
+            throw new Exception("Incorrect username or password", e);
+        }
+        UserDetails user = userService.loadUserByUsername(authRequest.getUsername());
+        String jwt = jwtUtil.generateToken(user);
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 
 }
