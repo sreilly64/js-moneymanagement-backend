@@ -4,11 +4,12 @@ import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.*;
 
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService{
 
     private UserRepository userRepo;
 
@@ -69,5 +70,16 @@ public class UserService {
         }else{
             return false;
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        List<UserEntity> users = userRepo.findAll();
+        for(UserEntity user: users){
+            if(user.getUsername().equals(username)){
+                return user;
+            }
+        }
+        throw new UsernameNotFoundException("Invalid username");
     }
 }
