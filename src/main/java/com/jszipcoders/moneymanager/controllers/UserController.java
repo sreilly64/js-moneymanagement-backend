@@ -13,11 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping(value = "/api")
 public class UserController {
 
@@ -85,16 +87,26 @@ public class UserController {
         return new ResponseEntity<Boolean>(userDeleted, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/users/authenticate")
+    @CrossOrigin
+    @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthToken(@RequestBody AuthenticationRequest authRequest) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-            );
-        } catch (BadCredentialsException e){
-            throw new Exception("Incorrect username or password", e);
+//        try {
+//            authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+//            );
+//        } catch (BadCredentialsException e){
+//            throw new Exception("Incorrect username or password", e);
+//        }
+        LOGGER.info("Username: " + authRequest.getUsername());
+        LOGGER.info("Password: " + authRequest.getPassword());
+
+        UserDetails user = null;
+        try{
+            user = userService.userLogin(authRequest.getUsername(), authRequest.getPassword());
+        } catch (AuthenticationException e){
+            LOGGER.info(e.getMessage(), e);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        UserDetails user = userService.loadUserByUsername(authRequest.getUsername());
         String jwt = jwtUtil.generateToken(user);
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }

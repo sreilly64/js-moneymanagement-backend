@@ -3,6 +3,8 @@ package com.jszipcoders.moneymanager.services;
 import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.*;
 
@@ -70,6 +72,16 @@ public class UserService implements UserDetailsService{
         }else{
             return false;
         }
+    }
+
+    public UserEntity userLogin(String username, String password) throws AuthenticationException {
+        List<UserEntity> users = userRepo.findAll();
+        for(UserEntity user: users){
+            if(user.getUsername().equals(username) && user.getPassword().equals(password)){
+                return user;
+            }
+        }
+        throw new BadCredentialsException("Invalid username or password");
     }
 
     @Override
