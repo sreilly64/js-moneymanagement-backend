@@ -174,4 +174,19 @@ public class UserEntity implements UserDetails{
     public int hashCode() {
         return Objects.hash(userId, firstName, lastName, ssn, address, email, phoneNumber, username, password);
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "userId=" + userId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", ssn='" + ssn + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

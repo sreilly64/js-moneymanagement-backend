@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api")
+@CrossOrigin
 public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
@@ -90,7 +91,6 @@ public class UserController {
         return new ResponseEntity<Boolean>(userDeleted, HttpStatus.OK);
     }
 
-    @CrossOrigin
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthToken(@RequestBody AuthenticationRequest authRequest) throws Exception {
 //        try {
@@ -100,22 +100,25 @@ public class UserController {
 //        } catch (BadCredentialsException e){
 //            throw new Exception("Incorrect username or password", e);
 //        }
-        LOGGER.info("Username: " + authRequest.getUsername());
-        LOGGER.info("Password: " + authRequest.getPassword());
+//        LOGGER.info("Username: " + authRequest.getUsername());
+//        LOGGER.info("Password: " + authRequest.getPassword());
 
         UserDetails user = null;
         try{
             user = userService.userLogin(authRequest.getUsername(), authRequest.getPassword());
         } catch (AuthenticationException e){
-            String message = e.getMessage();
             JSONObject json = new JSONObject();
-            json.put("message", message);
+            json.put("message", e.getMessage());
 
             LOGGER.info(e.getMessage(), e);
             return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
         }
         String jwt = jwtUtil.generateToken(user);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        JSONObject json = new JSONObject();
+        json.put("jwt", jwt);
+        json.put("user", new JSONObject(userService.findUserById(userService.getUserIdByUsername(user.getUsername()))));
+
+        return ResponseEntity.ok(json.toString());
     }
 
 }
