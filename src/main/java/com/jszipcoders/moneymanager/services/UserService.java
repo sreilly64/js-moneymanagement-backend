@@ -84,6 +84,16 @@ public class UserService implements UserDetailsService{
         throw new BadCredentialsException("Invalid username or password");
     }
 
+    public Long getUserIdByUsername(String username) throws UsernameNotFoundException{
+        List<UserEntity> users = userRepo.findAll();
+        for(UserEntity user: users){
+            if(user.getUsername().equals(username)){
+                return user.getUserId();
+            }
+        }
+        throw new UsernameNotFoundException("Invalid username");
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         List<UserEntity> users = userRepo.findAll();
