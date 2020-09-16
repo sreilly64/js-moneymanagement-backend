@@ -1,7 +1,10 @@
 package com.jszipcoders.moneymanager.controllers;
 
+import com.jszipcoders.moneymanager.entities.AuthenticationResponse;
 import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.services.UserService;
+import com.jszipcoders.moneymanager.util.JwtUtil;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +19,12 @@ public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     private UserService userService;
+    private JwtUtil jwtUtil;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping(value = "/users")
@@ -29,9 +34,14 @@ public class UserController {
             userEntity = userService.addUser(newUser);
         }catch (Exception e){
             LOGGER.info(e.getMessage(), e);
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            JSONObject json = new JSONObject();
+            json.put("message", e.getMessage());
+            return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<UserEntity>(userEntity, HttpStatus.CREATED);
+        String jwt = jwtUtil.generateToken(userEntity);
+        AuthenticationResponse response = new AuthenticationResponse(jwt, userEntity.getUserId());
+
+        return new ResponseEntity<AuthenticationResponse>(response, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/users/{user_id}")
