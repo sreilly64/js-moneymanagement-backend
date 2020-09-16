@@ -1,10 +1,13 @@
 package com.jszipcoders.moneymanager.services;
 
 import com.jszipcoders.moneymanager.entities.AccountEntity;
+import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +32,8 @@ public class AccountService {
 
     public Double updateBalance(Long account_number, Double amount){
         AccountEntity accountEntity = this.accountRepository.findById(account_number).get();
-        accountEntity.setBalance(amount + accountEntity.getBalance());
+        BigDecimal bd = new BigDecimal(amount + accountEntity.getBalance()).setScale(2, RoundingMode.HALF_UP);
+        accountEntity.setBalance(bd.doubleValue());
         return accountRepository.save(accountEntity).getBalance();
     }
 
