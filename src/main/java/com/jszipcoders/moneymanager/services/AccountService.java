@@ -34,13 +34,6 @@ public class AccountService {
         return listOfAccounts.stream().filter(a -> a.getUserId() == user_id).collect(Collectors.toList());
     }
 
-    public Double updateBalance(Long account_number, Double amount){
-        AccountEntity accountEntity = this.accountRepository.findById(account_number).get();
-        BigDecimal bd = new BigDecimal(amount + accountEntity.getBalance()).setScale(2, RoundingMode.HALF_UP);
-        accountEntity.setBalance(bd.doubleValue());
-        return accountRepository.save(accountEntity).getBalance();
-    }
-
     public AccountEntity createAccount(AccountEntity newAccount) {
         return accountRepository.save(newAccount);
     }

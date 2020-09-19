@@ -54,18 +54,6 @@ public class AccountController {
         return new ResponseEntity<List<AccountEntity>>(accountEntityList, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/accounts/{account_number}/update/{amount}")
-    public ResponseEntity<Double> updateBalance(@PathVariable Long account_number, @PathVariable Double amount) {
-        Double balance = null;
-        try{
-            balance = accountService.updateBalance(account_number, amount);
-        }catch(Exception e){
-            LOGGER.info(e.getMessage(), e);
-            return ResponseEntity.notFound().build();
-        }
-        return new ResponseEntity<Double>(balance, HttpStatus.OK);
-    }
-
     @PutMapping(value = "/accounts/{account_number}/deposit/{amount}")
     public ResponseEntity<?> deposit(@PathVariable Long account_number, @PathVariable Double amount) {
         TransactionResponse response = null;
