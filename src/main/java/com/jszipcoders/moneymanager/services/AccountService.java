@@ -72,21 +72,19 @@ public class AccountService {
         if(newBalance.doubleValue() >= 0){
             accountEntity.setBalance(newBalance.doubleValue());
             accountRepository.save(accountEntity);
-            return new TransactionResponse("withdaw", amount, false);
+            return new TransactionResponse("withdrawal", amount, false);
         }else if (newBalance.doubleValue() < -100.00){
             throw new InvalidParameterException("Insufficient funds");
         }else {
             accountEntity.setBalance(newBalance.doubleValue() - 25.00);
             accountRepository.save(accountEntity);
-            return new TransactionResponse("withdraw", amount, true);
+            return new TransactionResponse("withdrawal", amount, true);
         }
     }
 
     public TransactionResponse transfer(TransferRequest request) {
-        AccountEntity fromAccount = this.accountRepository.findById(request.getFromAccountId()).get();
-        TransactionResponse withdrawResponse = withdraw(fromAccount.getAccountNumber(), request.getDollarAmount());
-        AccountEntity toAccount = this.accountRepository.findById(request.getToAccountId()).get();
-        deposit(toAccount.getAccountNumber(), request.getDollarAmount());
+        TransactionResponse withdrawResponse = withdraw(request.getFromAccountId(), request.getDollarAmount());
+        deposit(request.getToAccountId(), request.getDollarAmount());
         return new TransactionResponse("transfer", request.getDollarAmount(), withdrawResponse.getOverDrafted());
     }
 }
