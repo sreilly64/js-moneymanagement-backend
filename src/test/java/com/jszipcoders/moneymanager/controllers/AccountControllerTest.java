@@ -114,21 +114,21 @@ public class AccountControllerTest {
         verifyNoMoreInteractions(accountService);
     }
 
-    @Test
-    public void updateBalance() throws Exception {
-        Double balance = 5000.00;
-
-        when(accountService.updateBalance(2L, 1000.00)).thenReturn(balance);
-
-        mockMvc.perform(
-                put("/api/accounts/{account_number}/update/{amount}", 2L, 1000.00)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(asJsonString(balance)))
-                        .andExpect(status().isOk());
-
-        verify(accountService, times(1)).updateBalance(2L, 1000.00);
-        verifyNoMoreInteractions(accountService);
-    }
+//    @Test
+//    public void updateBalance() throws Exception {
+//        Double balance = 5000.00;
+//
+//        when(accountService.updateBalance(2L, 1000.00)).thenReturn(balance);
+//
+//        mockMvc.perform(
+//                put("/api/accounts/{account_number}/update/{amount}", 2L, 1000.00)
+//                            .contentType(MediaType.APPLICATION_JSON)
+//                            .content(asJsonString(balance)))
+//                        .andExpect(status().isOk());
+//
+//        verify(accountService, times(1)).updateBalance(2L, 1000.00);
+//        verifyNoMoreInteractions(accountService);
+//    }
 
     @Test
     public void createAccount() throws Exception {
