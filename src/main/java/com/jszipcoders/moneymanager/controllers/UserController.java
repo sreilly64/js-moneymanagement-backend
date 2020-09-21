@@ -1,6 +1,8 @@
 package com.jszipcoders.moneymanager.controllers;
 
+import com.jszipcoders.moneymanager.entities.AuthenticationRequest;
 import com.jszipcoders.moneymanager.entities.AuthenticationResponse;
+import com.jszipcoders.moneymanager.entities.PasswordRequest;
 import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.services.UserService;
 import com.jszipcoders.moneymanager.util.JwtUtil;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -63,13 +66,33 @@ public class UserController {
             userEntity = userService.updateUserDetails(user_id, updatedUser);
         }catch (IllegalArgumentException e){
             LOGGER.info(e.getMessage(), e);
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            JSONObject json = new JSONObject();
+            json.put("message", e.getMessage());
+            return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
         }
         catch(Exception e){
             LOGGER.info(e.getMessage(), e);
             return ResponseEntity.notFound().build();
         }
         return new ResponseEntity<UserEntity>(userEntity, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/users/{user_id}/password")
+    public ResponseEntity<?> updatePassword(@PathVariable Long user_id, @RequestBody PasswordRequest request){
+        UserEntity userEntity = null;
+        try{
+            userEntity = userService.updatePassword(user_id, request);
+        }catch (BadCredentialsException e){
+            LOGGER.info(e.getMessage(), e);
+            JSONObject json = new JSONObject();
+            json.put("message", e.getMessage());
+            return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+        }
+        catch(Exception e){
+            LOGGER.info(e.getMessage(), e);
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userEntity);
     }
 
     @DeleteMapping(value = "/users/{user_id}")

@@ -1,5 +1,6 @@
 package com.jszipcoders.moneymanager.services;
 
+import com.jszipcoders.moneymanager.entities.PasswordRequest;
 import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class UserService implements UserDetailsService{
         userEntity.setAddress(updatedUser.getAddress());
         userEntity.setEmail(updatedUser.getEmail());
         userEntity.setPhoneNumber(updatedUser.getPhoneNumber());
-        userEntity.setPassword(updatedUser.getPassword());
+        //userEntity.setPassword(updatedUser.getPassword());
 
         checkIfUserDetailsAreTaken(userEntity);
 
@@ -103,5 +104,26 @@ public class UserService implements UserDetailsService{
             }
         }
         throw new UsernameNotFoundException("Invalid username");
+    }
+
+    public Boolean confirmPassword(String username, String password) {
+        Long userId = getUserIdByUsername(username);
+        UserEntity user = findUserById(userId);
+        if(user.getPassword().equals(password)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public UserEntity updatePassword(Long user_id, PasswordRequest request) {
+        UserEntity user = findUserById(user_id);
+        if(request.getOldPassword().equals(user.getPassword())){
+            user.setPassword(request.getNewPassword());
+            return userRepo.save(user);
+        }else {
+            throw new BadCredentialsException("Current password is invalid");
+        }
+
     }
 }
