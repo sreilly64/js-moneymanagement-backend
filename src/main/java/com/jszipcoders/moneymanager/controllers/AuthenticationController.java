@@ -48,18 +48,22 @@ public class AuthenticationController {
         return ResponseEntity.ok(info);
     }
 
+    @PostMapping(value = "/authenticate/password")
+    public ResponseEntity<?> confirmPassword(@RequestBody AuthenticationRequest authRequest) throws Exception {
+        Boolean validPassword = null;
+        try{
+            validPassword = userService.confirmPassword(authRequest.getUsername(), authRequest.getPassword());
+        } catch (AuthenticationException e){
+            LOGGER.info(e.getMessage(), e);
+            JSONObject json = new JSONObject();
+            json.put("message", e.getMessage());
+            return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(validPassword);
+    }
+
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthToken(@RequestBody AuthenticationRequest authRequest) throws Exception {
-//        try {
-//            authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-//            );
-//        } catch (BadCredentialsException e){
-//            throw new Exception("Incorrect username or password", e);
-//        }
-//        LOGGER.info("Username: " + authRequest.getUsername());
-//        LOGGER.info("Password: " + authRequest.getPassword());
-
         UserDetails user = null;
         try{
             user = userService.userLogin(authRequest.getUsername(), authRequest.getPassword());
