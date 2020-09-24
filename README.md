@@ -26,7 +26,7 @@ psql
 ./mvnw clean package
 ```
 
-3. Run project locally.
+4. Run project locally.
 
 ```none
 export DB_URL=jdbc:postgresql://localhost:5432/jsmoney
