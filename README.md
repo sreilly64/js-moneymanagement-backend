@@ -1,6 +1,7 @@
 # Money Bee Backend
 
 Backend API for a fintech money management application.
+
 The frontend can be found at: https://github.com/sreilly64/js-moneymanagement-frontend
 
 # Running locally
