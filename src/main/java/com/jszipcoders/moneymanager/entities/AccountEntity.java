@@ -24,15 +24,23 @@ public class AccountEntity {
     @Column(name = "routingnumber")
     private final Integer routingNumber = 394058927;
 
+    @Column(name = "nickname")
+    private String nickname;
+
     public AccountEntity() {
-        this(null, null, null, null);
+        this(null, null, null, null, null);
     }
 
     public AccountEntity(Long accountNumber, AccountType type, Long userId, Double balance) {
+        this(accountNumber, type, userId, balance, null);
+    }
+
+    public AccountEntity(Long accountNumber, AccountType type, Long userId, Double balance, String nickname) {
         this.accountNumber = accountNumber;
         this.type = type;
         this.userId = userId;
         this.balance = balance;
+        this.nickname = nickname;
     }
 
     public Long getAccountNumber() {
@@ -69,6 +77,14 @@ public class AccountEntity {
 
     public Integer getRoutingNumber() {
         return routingNumber;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     @Override
