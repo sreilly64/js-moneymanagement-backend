@@ -80,4 +80,10 @@ public class AccountService {
         deposit(request.getToAccountId(), request.getDollarAmount());
         return new TransactionResponse("transfer", request.getDollarAmount(), withdrawResponse.getOverDrafted());
     }
+
+    public AccountEntity setNickname(Long accountNumber, String nickname) {
+        AccountEntity account = findByAccountNumber(accountNumber);
+        account.setNickname(nickname);
+        return this.accountRepository.save(account);
+    }
 }

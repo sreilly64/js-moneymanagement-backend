@@ -1,6 +1,7 @@
 package com.jszipcoders.moneymanager.controllers;
 
 import com.jszipcoders.moneymanager.entities.AccountEntity;
+import com.jszipcoders.moneymanager.entities.NicknameRequest;
 import com.jszipcoders.moneymanager.entities.TransactionResponse;
 import com.jszipcoders.moneymanager.entities.TransferRequest;
 import com.jszipcoders.moneymanager.services.AccountService;
@@ -113,6 +114,23 @@ public class AccountController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping(value = "/accounts/{accountNumber}/nickname")
+    public ResponseEntity<?> setNickname(@PathVariable Long accountNumber, @RequestBody NicknameRequest request){
+        AccountEntity updatedAccount = null;
+        try{
+            updatedAccount = accountService.setNickname(accountNumber, request.getNickname());
+        }catch(NoSuchElementException e){
+            LOGGER.info(e.getMessage(), e);
+            JSONObject json = new JSONObject();
+            json.put("message", "Invalid account number");
+            return new ResponseEntity<String>(json.toString(), HttpStatus.NOT_FOUND);
+        }catch(Exception e){
+            LOGGER.info(e.getMessage(), e);
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(updatedAccount);
     }
 
     @PostMapping(value = "/accounts")

@@ -51,7 +51,7 @@ public class AccountControllerTest {
 
     @Test
     public void findByAccountNumber() throws Exception {
-        AccountEntity accountEntity = new AccountEntity(2L, AccountType.CHECKING, 1L, 4000.00);
+        AccountEntity accountEntity = new AccountEntity(2L, AccountType.CHECKING, 1L, 4000.00, null);
 
         when(accountService.findByAccountNumber(2L)).thenReturn(accountEntity);
 
@@ -81,7 +81,7 @@ public class AccountControllerTest {
 
     @Test
     public void findAllAccountsByUserId() throws Exception {
-        List<AccountEntity> accountEntityList = Arrays.asList(new AccountEntity(3L, AccountType.CHECKING, 2L, 5000.00), new AccountEntity(4L, AccountType.SAVINGS, 2L, 9000.00));
+        List<AccountEntity> accountEntityList = Arrays.asList(new AccountEntity(3L, AccountType.CHECKING, 2L, 5000.00, null), new AccountEntity(4L, AccountType.SAVINGS, 2L, 9000.00, null));
 
         when(accountService.findAllAccountsByUserId(2L)).thenReturn(accountEntityList);
 
@@ -132,7 +132,7 @@ public class AccountControllerTest {
 
     @Test
     public void createAccount() throws Exception {
-        AccountEntity accountEntity = new AccountEntity(100L, AccountType.CHECKING, 9L, 4000.00);
+        AccountEntity accountEntity = new AccountEntity(100L, AccountType.CHECKING, 9L, 4000.00, null);
 
         when(accountService.createAccount(accountEntity)).thenReturn(accountEntity);
 
