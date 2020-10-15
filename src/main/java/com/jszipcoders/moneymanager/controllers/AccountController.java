@@ -1,10 +1,13 @@
 package com.jszipcoders.moneymanager.controllers;
 
 import com.jszipcoders.moneymanager.entities.AccountEntity;
+import com.jszipcoders.moneymanager.entities.TransactionHistoryEntity;
+import com.jszipcoders.moneymanager.entities.TransactionType;
 import com.jszipcoders.moneymanager.requests.NicknameRequest;
 import com.jszipcoders.moneymanager.responses.TransactionResponse;
 import com.jszipcoders.moneymanager.requests.TransferRequest;
 import com.jszipcoders.moneymanager.services.AccountService;
+import com.jszipcoders.moneymanager.services.TransactionHistoryService;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +28,12 @@ public class AccountController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
     private AccountService accountService;
+    private TransactionHistoryService transactionHistoryService;
 
     @Autowired
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, TransactionHistoryService transactionHistoryService) {
         this.accountService = accountService;
+        this.transactionHistoryService = transactionHistoryService;
     }
 
     @GetMapping(value = "/accounts/{account_number}")
@@ -58,8 +63,10 @@ public class AccountController {
     @PutMapping(value = "/accounts/{account_number}/deposit/{amount}")
     public ResponseEntity<?> deposit(@PathVariable Long account_number, @PathVariable Double amount) {
         TransactionResponse response = null;
+        TransactionHistoryEntity history = null;
         try{
             response = accountService.deposit(account_number, amount);
+            history = transactionHistoryService.save(account_number, null, amount, TransactionType.DEPOSIT);
         }catch(NoSuchElementException e){
             LOGGER.info(e.getMessage(), e);
             JSONObject json = new JSONObject();
@@ -75,8 +82,10 @@ public class AccountController {
     @PutMapping(value = "/accounts/{account_number}/withdraw/{amount}")
     public ResponseEntity<?> withdraw(@PathVariable Long account_number, @PathVariable Double amount) {
         TransactionResponse response = null;
+        TransactionHistoryEntity history = null;
         try{
             response = accountService.withdraw(account_number, amount);
+            history = transactionHistoryService.save(account_number, null, amount, TransactionType.WITHDRAW);
         }catch(InvalidParameterException e){
             LOGGER.info(e.getMessage(), e);
             JSONObject json = new JSONObject();
@@ -97,8 +106,10 @@ public class AccountController {
     @PutMapping(value = "/accounts/transfer")
     public ResponseEntity<?> transfer(@RequestBody TransferRequest request) {
         TransactionResponse response = null;
+        TransactionHistoryEntity history = null;
         try{
             response = accountService.transfer(request);
+            history = transactionHistoryService.save(request.getFromAccountId(), request.getToAccountId(), request.getDollarAmount(), TransactionType.TRANSFER);
         }catch(InvalidParameterException e){
             LOGGER.info(e.getMessage(), e);
             JSONObject json = new JSONObject();
