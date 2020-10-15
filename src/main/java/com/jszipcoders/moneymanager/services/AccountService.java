@@ -1,13 +1,11 @@
 package com.jszipcoders.moneymanager.services;
 
 import com.jszipcoders.moneymanager.entities.AccountEntity;
-import com.jszipcoders.moneymanager.entities.TransactionResponse;
-import com.jszipcoders.moneymanager.entities.TransferRequest;
-import com.jszipcoders.moneymanager.entities.UserEntity;
+import com.jszipcoders.moneymanager.responses.TransactionResponse;
+import com.jszipcoders.moneymanager.requests.TransferRequest;
 import com.jszipcoders.moneymanager.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

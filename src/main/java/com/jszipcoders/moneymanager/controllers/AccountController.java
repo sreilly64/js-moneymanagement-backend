@@ -1,9 +1,9 @@
 package com.jszipcoders.moneymanager.controllers;
 
 import com.jszipcoders.moneymanager.entities.AccountEntity;
-import com.jszipcoders.moneymanager.entities.NicknameRequest;
-import com.jszipcoders.moneymanager.entities.TransactionResponse;
-import com.jszipcoders.moneymanager.entities.TransferRequest;
+import com.jszipcoders.moneymanager.requests.NicknameRequest;
+import com.jszipcoders.moneymanager.responses.TransactionResponse;
+import com.jszipcoders.moneymanager.requests.TransferRequest;
 import com.jszipcoders.moneymanager.services.AccountService;
 import org.json.JSONObject;
 import org.slf4j.Logger;

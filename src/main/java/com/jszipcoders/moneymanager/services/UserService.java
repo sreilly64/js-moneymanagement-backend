@@ -1,6 +1,6 @@
 package com.jszipcoders.moneymanager.services;
 
-import com.jszipcoders.moneymanager.entities.PasswordRequest;
+import com.jszipcoders.moneymanager.requests.PasswordRequest;
 import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

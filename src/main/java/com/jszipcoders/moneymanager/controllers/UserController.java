@@ -1,8 +1,7 @@
 package com.jszipcoders.moneymanager.controllers;
 
-import com.jszipcoders.moneymanager.entities.AuthenticationRequest;
-import com.jszipcoders.moneymanager.entities.AuthenticationResponse;
-import com.jszipcoders.moneymanager.entities.PasswordRequest;
+import com.jszipcoders.moneymanager.responses.AuthenticationResponse;
+import com.jszipcoders.moneymanager.requests.PasswordRequest;
 import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.services.UserService;
 import com.jszipcoders.moneymanager.util.JwtUtil;

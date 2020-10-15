@@ -1,4 +1,4 @@
-package com.jszipcoders.moneymanager.entities;
+package com.jszipcoders.moneymanager.responses;
 
 import java.util.List;
 
