@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,18 @@ public class AccountController {
         this.transactionHistoryService = transactionHistoryService;
     }
 
+    @GetMapping(value = "/accounts/{account_number}/transactions")
+    public ResponseEntity<?> getTransactions(@PathVariable Long account_number){
+        List<TransactionHistoryEntity> history = null;
+        try {
+            history = transactionHistoryService.getTransactions(account_number);
+        }catch(Exception e){
+            LOGGER.info(e.getMessage(), e);
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(history);
+    }
+
     @GetMapping(value = "/accounts/{account_number}")
     public ResponseEntity<AccountEntity> findByAccountNumber(@PathVariable Long account_number) {
         AccountEntity accountEntity = null;
@@ -45,7 +58,7 @@ public class AccountController {
             LOGGER.info(e.getMessage(), e);
             return ResponseEntity.notFound().build();
         }
-            return new ResponseEntity<AccountEntity>(accountEntity, HttpStatus.OK);
+        return new ResponseEntity<AccountEntity>(accountEntity, HttpStatus.OK);
     }
 
     @GetMapping(value = "/accounts/user/{user_id}")

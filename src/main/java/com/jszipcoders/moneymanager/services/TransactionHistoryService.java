@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionHistoryService {
@@ -23,4 +25,8 @@ public class TransactionHistoryService {
         return this. transactionHistoryRepository.save(transaction);
     }
 
+    public List<TransactionHistoryEntity> getTransactions(Long accountNumber) {
+        List<TransactionHistoryEntity> allTransactions = this.transactionHistoryRepository.findAll();
+        return allTransactions.stream().filter(t -> t.getPrimaryAccountNumber() == accountNumber).collect(Collectors.toList());
+    }
 }

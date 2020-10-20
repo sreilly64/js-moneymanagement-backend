@@ -1,6 +1,7 @@
 package com.jszipcoders.moneymanager.services;
 
 import com.jszipcoders.moneymanager.entities.AccountEntity;
+import com.jszipcoders.moneymanager.entities.TransactionHistoryEntity;
 import com.jszipcoders.moneymanager.responses.TransactionResponse;
 import com.jszipcoders.moneymanager.requests.TransferRequest;
 import com.jszipcoders.moneymanager.repositories.AccountRepository;
@@ -39,11 +40,7 @@ public class AccountService {
     public boolean deleteAccount(Long account_number) {
         AccountEntity account = accountRepository.findById(account_number).orElse(null);
         accountRepository.deleteById(account_number);
-        if(account == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return account != null;
     }
 
     public TransactionResponse deposit(Long account_number, Double amount) {
