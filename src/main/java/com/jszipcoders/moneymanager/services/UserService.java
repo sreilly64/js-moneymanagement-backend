@@ -58,7 +58,6 @@ public class UserService implements UserDetailsService{
         userEntity.setAddress(updatedUser.getAddress());
         userEntity.setEmail(updatedUser.getEmail());
         userEntity.setPhoneNumber(updatedUser.getPhoneNumber());
-        //userEntity.setPassword(updatedUser.getPassword());
 
         checkIfUserDetailsAreTaken(userEntity);
 
@@ -93,6 +92,10 @@ public class UserService implements UserDetailsService{
             }
         }
         throw new UsernameNotFoundException("Invalid username");
+    }
+
+    public List<UserEntity> getAllUsers() {
+        return userRepo.findAll();
     }
 
     @Override

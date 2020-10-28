@@ -1,12 +1,20 @@
 package com.jszipcoders.moneymanager.util;
 
+import com.jszipcoders.moneymanager.controllers.UserController;
 import com.jszipcoders.moneymanager.entities.UserEntity;
+import com.jszipcoders.moneymanager.services.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +24,11 @@ import java.util.function.Function;
 public class JwtUtil {
 
     //private String SECRET_KEY = System.getenv("JWT_KEY");
-    private String SECRET_KEY = "supersecret";
+    private final String SECRET_KEY = "supersecret";
+    @Autowired
+    private UserService userService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
 
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
@@ -32,7 +44,7 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token){
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(SECRET_KEY.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token){
@@ -50,13 +62,20 @@ public class JwtUtil {
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 2))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes(StandardCharsets.UTF_8))
                 .compact();
     }
 
-    public Boolean validateToken(String token, UserDetails user){
-        final String username = extractUsername(token);
-        return (username.equals(user.getUsername()) && !isTokenExpired(token));
+    public Boolean validateToken(String token){
+        String username = null;
+        try {
+            username = extractUsername(token);
+        }catch(SignatureException e) {
+            LOGGER.info(e.getMessage(), e);
+            return false;
+        }
+        UserEntity userEntity = userService.findUserById(userService.getUserIdByUsername(username));
+        return (userService.getAllUsers().contains(userEntity) && !isTokenExpired(token));
     }
 
 }
