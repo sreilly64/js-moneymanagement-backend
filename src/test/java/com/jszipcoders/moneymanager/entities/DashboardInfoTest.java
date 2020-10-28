@@ -1,12 +1,10 @@
 package com.jszipcoders.moneymanager.entities;
 
-import org.junit.Assert;
+import com.jszipcoders.moneymanager.responses.DashboardInfo;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
-
-import static org.junit.Assert.*;
 
 public class DashboardInfoTest {
 

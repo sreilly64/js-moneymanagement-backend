@@ -1,4 +1,7 @@
-package com.jszipcoders.moneymanager.entities;
+package com.jszipcoders.moneymanager.responses;
+
+import com.jszipcoders.moneymanager.entities.AccountEntity;
+import com.jszipcoders.moneymanager.entities.UserEntity;
 
 import javax.persistence.Column;
 import java.util.Arrays;

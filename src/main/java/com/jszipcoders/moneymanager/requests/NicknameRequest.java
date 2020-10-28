@@ -1,4 +1,4 @@
-package com.jszipcoders.moneymanager.entities;
+package com.jszipcoders.moneymanager.requests;
 
 public class NicknameRequest {
 
