@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +36,11 @@ public class AccountController {
         this.transactionHistoryService = transactionHistoryService;
     }
 
-    @GetMapping(value = "/accounts/{account_number}/transactions")
-    public ResponseEntity<?> getTransactions(@PathVariable Long account_number){
+    @GetMapping(value = "/accounts/{accountNumber}/transactions")
+    public ResponseEntity<?> getTransactions(@PathVariable Long accountNumber){
         List<TransactionHistoryEntity> history = null;
         try {
-            history = transactionHistoryService.getTransactions(account_number);
+            history = transactionHistoryService.getTransactions(accountNumber);
         }catch(Exception e){
             LOGGER.info(e.getMessage(), e);
             return ResponseEntity.notFound().build();
@@ -79,7 +78,7 @@ public class AccountController {
         TransactionHistoryEntity history = null;
         try{
             response = accountService.deposit(account_number, amount);
-            history = transactionHistoryService.save(account_number, null, amount, TransactionType.DEPOSIT);
+            transactionHistoryService.save(account_number, null, amount, TransactionType.DEPOSIT);
         }catch(NoSuchElementException e){
             LOGGER.info(e.getMessage(), e);
             JSONObject json = new JSONObject();
@@ -98,7 +97,7 @@ public class AccountController {
         TransactionHistoryEntity history = null;
         try{
             response = accountService.withdraw(account_number, amount);
-            history = transactionHistoryService.save(account_number, null, amount, TransactionType.WITHDRAW);
+            transactionHistoryService.save(account_number, null, amount, TransactionType.WITHDRAW);
         }catch(InvalidParameterException e){
             LOGGER.info(e.getMessage(), e);
             JSONObject json = new JSONObject();
@@ -122,7 +121,7 @@ public class AccountController {
         TransactionHistoryEntity history = null;
         try{
             response = accountService.transfer(request);
-            history = transactionHistoryService.save(request.getFromAccountId(), request.getToAccountId(), request.getDollarAmount(), TransactionType.TRANSFER);
+            transactionHistoryService.save(request.getFromAccountId(), request.getToAccountId(), request.getDollarAmount(), TransactionType.TRANSFER);
         }catch(InvalidParameterException e){
             LOGGER.info(e.getMessage(), e);
             JSONObject json = new JSONObject();

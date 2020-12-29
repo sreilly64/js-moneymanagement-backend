@@ -22,11 +22,11 @@ public class TransactionHistoryService {
 
     public TransactionHistoryEntity save(Long primaryAccount, Long secondaryAccount, Double amount, TransactionType type){
         TransactionHistoryEntity transaction = new TransactionHistoryEntity(primaryAccount, secondaryAccount, LocalDateTime.now(), amount, type);
-        return this. transactionHistoryRepository.save(transaction);
+        return this.transactionHistoryRepository.save(transaction);
     }
 
     public List<TransactionHistoryEntity> getTransactions(Long accountNumber) {
         List<TransactionHistoryEntity> allTransactions = this.transactionHistoryRepository.findAll();
-        return allTransactions.stream().filter(t -> t.getPrimaryAccountNumber() == accountNumber).collect(Collectors.toList());
+        return allTransactions.stream().filter(t -> t.getPrimaryAccountNumber() == accountNumber || t.getSecondaryAccountNumber() == accountNumber).collect(Collectors.toList());
     }
 }
