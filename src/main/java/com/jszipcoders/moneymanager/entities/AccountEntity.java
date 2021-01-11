@@ -95,8 +95,7 @@ public class AccountEntity {
         return Objects.equals(accountNumber, that.accountNumber) &&
                 type == that.type &&
                 Objects.equals(userId, that.userId) &&
-                Objects.equals(balance, that.balance) &&
-                Objects.equals(routingNumber, that.routingNumber);
+                Objects.equals(balance, that.balance);
     }
 
     @Override

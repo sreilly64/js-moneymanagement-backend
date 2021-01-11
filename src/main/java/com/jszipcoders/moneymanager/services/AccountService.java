@@ -1,7 +1,6 @@
 package com.jszipcoders.moneymanager.services;
 
 import com.jszipcoders.moneymanager.entities.AccountEntity;
-import com.jszipcoders.moneymanager.entities.TransactionHistoryEntity;
 import com.jszipcoders.moneymanager.responses.TransactionResponse;
 import com.jszipcoders.moneymanager.requests.TransferRequest;
 import com.jszipcoders.moneymanager.repositories.AccountRepository;
@@ -12,51 +11,58 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
     public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
 
-    public AccountEntity findByAccountNumber(Long accountNumber) {
-        return this.accountRepository.findById(accountNumber).get();
+    public AccountEntity findByAccountNumber(Long accountNumber) throws NoSuchElementException {
+        Optional<AccountEntity> account = this.accountRepository.findById(accountNumber);
+        if(account.isPresent()){
+            return account.get();
+        }else{
+            throw new NoSuchElementException("Account not found.");
+        }
     }
 
-    public List<AccountEntity> findAllAccountsByUserId(Long user_id) {
+    public List<AccountEntity> findAllAccountsByUserId(Long userId) {
         List<AccountEntity> listOfAccounts = this.accountRepository.findAll();
-        return listOfAccounts.stream().filter(a -> a.getUserId() == user_id).collect(Collectors.toList());
+        return listOfAccounts.stream().filter(a -> a.getUserId() == userId).collect(Collectors.toList());
     }
 
     public AccountEntity createAccount(AccountEntity newAccount) {
         return accountRepository.save(newAccount);
     }
 
-    public boolean deleteAccount(Long account_number) {
-        AccountEntity account = accountRepository.findById(account_number).orElse(null);
-        accountRepository.deleteById(account_number);
+    public boolean deleteAccount(Long accountNumber) {
+        AccountEntity account = accountRepository.findById(accountNumber).orElse(null);
+        accountRepository.deleteById(accountNumber);
         return account != null;
     }
 
-    public TransactionResponse deposit(Long account_number, Double amount) {
-        AccountEntity accountEntity = this.accountRepository.findById(account_number).get();
-        BigDecimal newBalance = new BigDecimal(accountEntity.getBalance() + amount).setScale(2, RoundingMode.HALF_UP);
+    public TransactionResponse deposit(Long accountNumber, Double amount) {
+        AccountEntity accountEntity = this.accountRepository.findById(accountNumber).get();
+        BigDecimal newBalance = BigDecimal.valueOf(accountEntity.getBalance() + amount).setScale(2, RoundingMode.HALF_UP);
         accountEntity.setBalance(newBalance.doubleValue());
         accountRepository.save(accountEntity);
         return new TransactionResponse("deposit", amount, false);
     }
 
-    public TransactionResponse withdraw(Long account_number, Double amount) {
-        AccountEntity accountEntity = this.accountRepository.findById(account_number).get();
+    public TransactionResponse withdraw(Long accountNumber, Double amount) {
+        AccountEntity accountEntity = this.accountRepository.findById(accountNumber).get();
         if(accountEntity.getBalance() < 0){
             throw new InvalidParameterException("Insufficient funds, account already over drafted");
         }
-        BigDecimal newBalance = new BigDecimal(accountEntity.getBalance() - amount).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal newBalance = BigDecimal.valueOf(accountEntity.getBalance() - amount).setScale(2, RoundingMode.HALF_UP);
         if(newBalance.doubleValue() >= 0){
             accountEntity.setBalance(newBalance.doubleValue());
             accountRepository.save(accountEntity);
