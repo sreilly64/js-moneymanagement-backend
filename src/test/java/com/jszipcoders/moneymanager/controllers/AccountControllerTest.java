@@ -1,6 +1,7 @@
 package com.jszipcoders.moneymanager.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jszipcoders.moneymanager.dto.AccountDTO;
 import com.jszipcoders.moneymanager.entities.AccountEntity;
 import com.jszipcoders.moneymanager.entities.AccountType;
 import com.jszipcoders.moneymanager.services.AccountService;
@@ -132,17 +133,19 @@ public class AccountControllerTest {
 
     @Test
     public void createAccount() throws Exception {
-        AccountEntity accountEntity = new AccountEntity(100L, AccountType.CHECKING, 9L, 4000.00, null);
+        AccountDTO accountDTO = new AccountDTO(AccountType.CHECKING, 9L, 4000.00, null);
+        AccountEntity accountEntity = new AccountEntity(100L, accountDTO.getType(), accountDTO.getUserId(), accountDTO.getBalance(), accountDTO.getNickname());
 
-        when(accountService.createAccount(accountEntity)).thenReturn(accountEntity);
+        when(accountService.createAccount(accountDTO)).thenReturn(accountEntity);
 
-        mockMvc.perform(
-                post("/api/accounts")
+        mockMvc.perform(post("/api/accounts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(accountEntity)))
-                    .andExpect(status().isCreated());
+                        .content(asJsonString(accountDTO)))
+                .andExpect(status().isCreated())
+                //.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.accountNumber", is(100)));
 
-        verify(accountService, times(1)).createAccount(accountEntity);
+        verify(accountService, times(1)).createAccount(accountDTO);
         verifyNoMoreInteractions(accountService);
     }
 

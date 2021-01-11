@@ -1,7 +1,5 @@
 package com.jszipcoders.moneymanager.responses;
 
-import java.util.List;
-
 public class AuthenticationResponse {
 
     private final String jwt;

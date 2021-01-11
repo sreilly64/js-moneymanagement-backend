@@ -1,6 +1,5 @@
 package com.jszipcoders.moneymanager.filter;
 
-import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.services.UserService;
 import com.jszipcoders.moneymanager.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         if(jwt != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            if(jwtUtil.validateToken(jwt)){
+            boolean jwtIsValid = jwtUtil.validateToken(jwt);
+            if(jwtIsValid){
                 UserDetails user = this.userService.loadUserByUsername(jwtUtil.extractUsername(jwt));
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 token.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));

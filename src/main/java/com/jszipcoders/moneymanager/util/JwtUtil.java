@@ -1,6 +1,5 @@
 package com.jszipcoders.moneymanager.util;
 
-import com.jszipcoders.moneymanager.controllers.UserController;
 import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.services.UserService;
 import io.jsonwebtoken.Claims;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,10 +22,10 @@ import java.util.function.Function;
 public class JwtUtil {
 
     //private String SECRET_KEY = System.getenv("JWT_KEY");
-    private final String SECRET_KEY = "supersecret";
+    private static final String SECRET_KEY = "supersecret";
     @Autowired
     private UserService userService;
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtil.class);
 
 
     public String extractUsername(String token){

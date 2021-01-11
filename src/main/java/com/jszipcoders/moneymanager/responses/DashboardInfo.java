@@ -3,8 +3,6 @@ package com.jszipcoders.moneymanager.responses;
 import com.jszipcoders.moneymanager.entities.AccountEntity;
 import com.jszipcoders.moneymanager.entities.UserEntity;
 
-import javax.persistence.Column;
-import java.util.Arrays;
 import java.util.List;
 
 public class DashboardInfo {
@@ -22,7 +20,6 @@ public class DashboardInfo {
 
 
     public DashboardInfo(UserEntity user, List<AccountEntity> accounts){
-        //this(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber(), user.getUsername(), accounts);
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
