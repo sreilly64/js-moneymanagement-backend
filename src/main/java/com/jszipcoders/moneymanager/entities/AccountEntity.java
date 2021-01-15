@@ -92,14 +92,16 @@ public class AccountEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AccountEntity that = (AccountEntity) o;
-        return Objects.equals(accountNumber, that.accountNumber) &&
+        return accountNumber.equals(that.accountNumber) &&
                 type == that.type &&
-                Objects.equals(userId, that.userId) &&
-                Objects.equals(balance, that.balance);
+                userId.equals(that.userId) &&
+                balance.equals(that.balance) &&
+                routingNumber.equals(that.routingNumber) &&
+                Objects.equals(nickname, that.nickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountNumber, type, userId, balance, routingNumber);
+        return Objects.hash(accountNumber, type, userId, balance, routingNumber, nickname);
     }
 }

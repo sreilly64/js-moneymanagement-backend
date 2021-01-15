@@ -5,16 +5,16 @@ import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService{
 
-    private UserRepository userRepo;
+    private final UserRepository userRepo;
 
     @Autowired
     public UserService(UserRepository userRepo){
@@ -46,12 +46,12 @@ public class UserService implements UserDetailsService{
         });
     }
 
-    public UserEntity findUserById(Long user_id) {
-        return userRepo.findById(user_id).get();
+    public UserEntity findUserById(Long userId) {
+        return userRepo.findById(userId).get();
     }
 
-    public UserEntity updateUserDetails(Long user_id, UserEntity updatedUser) {
-        UserEntity userEntity = userRepo.findById(user_id).get();
+    public UserEntity updateUserDetails(Long userId, UserEntity updatedUser) {
+        UserEntity userEntity = userRepo.findById(userId).get();
 
         userEntity.setFirstName(updatedUser.getFirstName());
         userEntity.setLastName(updatedUser.getLastName());
@@ -64,17 +64,17 @@ public class UserService implements UserDetailsService{
         return userRepo.save(userEntity);
     }
 
-    public Boolean deleteUserById(Long user_id) {
-        UserEntity userEntity = userRepo.findById(user_id).orElse(null);
-        userRepo.deleteById(user_id);
-        if(userEntity != null){
+    public Boolean deleteUserById(Long userId) {
+        if(userRepo.existsById(userId)){
+            UserEntity userEntity = userRepo.getOne(userId);
+            userRepo.delete(userEntity);
             return true;
         }else{
             return false;
         }
     }
 
-    public UserEntity userLogin(String username, String password) throws AuthenticationException {
+    public UserEntity userLogin(String username, String password) {
         List<UserEntity> users = userRepo.findAll();
         for(UserEntity user: users){
             if(user.getUsername().equals(username) && user.getPassword().equals(password)){
@@ -84,7 +84,7 @@ public class UserService implements UserDetailsService{
         throw new BadCredentialsException("Invalid username or password");
     }
 
-    public Long getUserIdByUsername(String username) throws UsernameNotFoundException{
+    public Long getUserIdByUsername(String username) {
         List<UserEntity> users = userRepo.findAll();
         for(UserEntity user: users){
             if(user.getUsername().equals(username)){
@@ -99,7 +99,7 @@ public class UserService implements UserDetailsService{
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         List<UserEntity> users = userRepo.findAll();
         for(UserEntity user: users){
             if(user.getUsername().equals(username)){
@@ -112,15 +112,11 @@ public class UserService implements UserDetailsService{
     public Boolean confirmPassword(String username, String password) {
         Long userId = getUserIdByUsername(username);
         UserEntity user = findUserById(userId);
-        if(user.getPassword().equals(password)){
-            return true;
-        }else{
-            return false;
-        }
+        return user.getPassword().equals(password);
     }
 
-    public UserEntity updatePassword(Long user_id, PasswordRequest request) {
-        UserEntity user = findUserById(user_id);
+    public UserEntity updatePassword(Long userId, PasswordRequest request) {
+        UserEntity user = findUserById(userId);
         if(request.getOldPassword().equals(user.getPassword())){
             user.setPassword(request.getNewPassword());
             return userRepo.save(user);

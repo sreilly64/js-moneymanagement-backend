@@ -1,5 +1,7 @@
 package com.jszipcoders.moneymanager.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jszipcoders.moneymanager.dto.AccountDTO;
 import com.jszipcoders.moneymanager.entities.AccountEntity;
 import com.jszipcoders.moneymanager.entities.TransactionHistoryEntity;
@@ -15,7 +17,9 @@ import com.jszipcoders.moneymanager.services.TransactionHistoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,16 +54,18 @@ public class AccountController {
         return ResponseEntity.ok(history);
     }
 
-    @GetMapping(value = "/accounts/{accountNumber}")
+    @GetMapping(value = "/accounts/{accountNumber}", produces = "application/json")
     public ResponseEntity<AccountEntity> findByAccountNumber(@PathVariable Long accountNumber) {
-        AccountEntity accountEntity = null;
+        AccountEntity accountEntity;
         try{
             accountEntity = accountService.findByAccountNumber(accountNumber);
-        }catch(Exception e){
+        }catch(EntityNotFoundException e){
             LOGGER.info(e.getMessage(), e);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
-        return new ResponseEntity<>(accountEntity, HttpStatus.OK);
+        //ObjectMapper mapper = new ObjectMapper();
+        //String jsonString = mapper.writeValueAsString(accountEntity);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(accountEntity);
     }
 
     @GetMapping(value = "/accounts/user/{userId}")

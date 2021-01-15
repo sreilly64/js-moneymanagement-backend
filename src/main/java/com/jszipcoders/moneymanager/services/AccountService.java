@@ -10,9 +10,11 @@ import com.jszipcoders.moneymanager.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +28,12 @@ public class AccountService {
     }
 
     public AccountEntity findByAccountNumber(Long accountNumber) {
-        return this.accountRepository.getOne(accountNumber);
+        Optional<AccountEntity> accountOptional = this.accountRepository.findById(accountNumber);
+        if(accountOptional.isPresent()){
+            return accountOptional.get();
+        }else{
+            throw new EntityNotFoundException("Account not found.");
+        }
     }
 
     public List<AccountEntity> findAllAccountsByUserId(Long userId) {

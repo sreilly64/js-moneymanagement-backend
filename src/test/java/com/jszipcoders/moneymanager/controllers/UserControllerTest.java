@@ -143,27 +143,27 @@ public class UserControllerTest {
 
     @Test
     public void deleteUserById() throws Exception {
-        UserEntity user = new UserEntity(1L, "Shane", "Reilly", "123-45-6789", "4 Street Road", "email@gmail.com", "867-5309", "CodingRulez", "secretPassword");
+        //UserEntity user = new UserEntity(1L, "Shane", "Reilly", "123-45-6789", "4 Street Road", "email@gmail.com", "867-5309", "CodingRulez", "secretPassword");
 
         when(userService.deleteUserById(1L)).thenReturn(true);
 
         mockMvc.perform(
-                delete("/api/users/{user_id}", user.getUserId()))
+                delete("/api/users/{userId}", 1))
                 .andExpect(status().isOk());
 
-        verify(userService, times(1)).deleteUserById(user.getUserId());
+        verify(userService, times(1)).deleteUserById(1L);
         verifyNoMoreInteractions(userService);
     }
 
     @Test
     public void deleteUserByIdFail() throws Exception {
-        UserEntity user = new UserEntity(1L, "Shane", "Reilly", "123-45-6789", "4 Street Road", "email@gmail.com", "867-5309", "CodingRulez", "secretPassword");
+        //UserEntity user = new UserEntity(1L, "Shane", "Reilly", "123-45-6789", "4 Street Road", "email@gmail.com", "867-5309", "CodingRulez", "secretPassword");
 
-        when(userService.deleteUserById(1L)).thenThrow(new NoSuchElementException("no such user"));
+        when(userService.deleteUserById(20L)).thenReturn(false);
 
         mockMvc.perform(
-                delete("/api/users/{user_id}", user.getUserId()))
-                .andExpect(status().isNotFound());
+                delete("/api/users/{userId}", 20))
+                .andExpect(status().isBadRequest());
 
     }
 
