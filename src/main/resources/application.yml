@@ -1,7 +1,4 @@
----
-
 spring:
-  profiles: in-memory
   h2:
     console:
       enabled: true
@@ -10,7 +7,7 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
-    data: data-h2.sql
+    data: classpath:data-h2.sql
   jpa:
     hibernate:
       ddl-auto: create
