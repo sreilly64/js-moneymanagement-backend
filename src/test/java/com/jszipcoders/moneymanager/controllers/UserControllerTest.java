@@ -3,13 +3,17 @@ package com.jszipcoders.moneymanager.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jszipcoders.moneymanager.entities.UserEntity;
 import com.jszipcoders.moneymanager.services.UserService;
+import com.jszipcoders.moneymanager.util.JwtUtil;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,14 +27,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@WebAppConfiguration
-@RunWith(SpringJUnit4ClassRunner.class)
+//@WebAppConfiguration
+//@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(value = UserController.class)
 public class UserControllerTest {
 
     private MockMvc mockMvc;
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private JwtUtil jwtUtil;
 
     @InjectMocks
     private UserController userController;

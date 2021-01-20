@@ -1,19 +1,28 @@
 package com.jszipcoders.moneymanager.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.jszipcoders.moneymanager.dto.AccountDTO;
 import com.jszipcoders.moneymanager.entities.AccountEntity;
 import com.jszipcoders.moneymanager.entities.AccountType;
 import com.jszipcoders.moneymanager.services.AccountService;
+import com.jszipcoders.moneymanager.services.TransactionHistoryService;
+import com.jszipcoders.moneymanager.services.UserService;
+import org.hamcrest.Matcher;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +33,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -39,9 +49,11 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-@WebAppConfiguration
-@RunWith(SpringJUnit4ClassRunner.class)
-public class AccountControllerTest {
+//@WebAppConfiguration
+//@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(value = AccountController.class)
+public class AccountControllerIntegrationTest {
 
     private MockMvc mockMvc;
 
@@ -50,6 +62,9 @@ public class AccountControllerTest {
 
     @InjectMocks
     private AccountController accountController;
+
+    private ObjectMapper mapper = new ObjectMapper();
+    private Gson gson = new Gson();
 
     @Before
     public void init(){
@@ -63,13 +78,12 @@ public class AccountControllerTest {
     public void findByAccountNumber() throws Exception {
         AccountEntity accountEntity = new AccountEntity(200L, AccountType.CHECKING, 1L, 4000.00, null);
 
-        when(accountService.findByAccountNumber(accountEntity.getAccountNumber())).thenReturn(accountEntity);
-        when(accountService.findByAccountNumber(201L)).thenThrow(new EntityNotFoundException("Account number not found."));
+        when(accountService.findByAccountNumber(200L)).thenReturn(accountEntity);
 
-        System.out.println("Account retrieved from service: " + asJsonString(accountService.findByAccountNumber(200L)));
-        mockMvc.perform(get("/api/accounts/{accountNumber}", 201L)).andDo(print());
+        //System.out.println("Account retrieved from service: " + asJsonString(accountService.findByAccountNumber(200L)));
+        //mockMvc.perform(get("/api/accounts/{accountNumber}", 201L)).andDo(print());
 
-        mockMvc.perform(get("/api/accounts/{accountNumber}", 201L))
+        mockMvc.perform(get("/api/accounts/{accountNumber}", 200L))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json"))
                 .andExpect(jsonPath("$.accountNumber", is(200)))
@@ -77,11 +91,6 @@ public class AccountControllerTest {
                 .andExpect(jsonPath("$.userId", is(1)))
                 .andExpect(jsonPath("$.balance", is(4000.00)))
                 .andExpect(jsonPath("$.routingNumber", is(394058927)));
-
-//        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/accounts/{accountNumber}", 200);
-//
-//        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-//        System.out.println("result: " + result.getResponse().getContentAsString());
 
         verify(accountService, times(1)).findByAccountNumber(200L);
         verifyNoMoreInteractions(accountService);
@@ -124,30 +133,20 @@ public class AccountControllerTest {
 
     @Test
     public void findAllAccountsByUserIdFail() throws Exception {
-        when(accountService.findAllAccountsByUserId(540L)).thenThrow(new NoSuchElementException("no Value present"));
+        List<AccountEntity> expectedList = new ArrayList<>();
+        when(accountService.findAllAccountsByUserId(540L)).thenReturn(expectedList);
 
-        mockMvc.perform(get("/api/accounts/user/{user_id}", 540))
-                .andExpect(status().isNotFound());
+        MvcResult mvcResult = mockMvc.perform(get("/api/accounts/user/{userId}", 540))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        List<AccountEntity> response = gson.fromJson(mvcResult.getResponse().getContentAsString(), ArrayList.class);
+        Assert.assertEquals(0, response.size());
 
         verify(accountService, times(1)).findAllAccountsByUserId(540L);
         verifyNoMoreInteractions(accountService);
     }
-
-//    @Test
-//    public void updateBalance() throws Exception {
-//        Double balance = 5000.00;
-//
-//        when(accountService.updateBalance(2L, 1000.00)).thenReturn(balance);
-//
-//        mockMvc.perform(
-//                put("/api/accounts/{account_number}/update/{amount}", 2L, 1000.00)
-//                            .contentType(MediaType.APPLICATION_JSON)
-//                            .content(asJsonString(balance)))
-//                        .andExpect(status().isOk());
-//
-//        verify(accountService, times(1)).updateBalance(2L, 1000.00);
-//        verifyNoMoreInteractions(accountService);
-//    }
 
     @Test
     public void createAccount() throws Exception {
@@ -160,7 +159,7 @@ public class AccountControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(accountDTO)))
                 .andExpect(status().isCreated())
-                //.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.accountNumber", is(100)));
 
         verify(accountService, times(1)).createAccount(accountDTO);
