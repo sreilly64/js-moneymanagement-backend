@@ -1,4 +1,4 @@
-package com.jszipcoders.moneymanager.requests;
+package com.jszipcoders.moneymanager.controllers.requests;
 
 public class AuthenticationRequest {
 

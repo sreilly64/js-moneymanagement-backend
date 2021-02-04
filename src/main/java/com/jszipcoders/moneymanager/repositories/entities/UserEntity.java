@@ -1,12 +1,12 @@
-package com.jszipcoders.moneymanager.entities;
+package com.jszipcoders.moneymanager.repositories.entities;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.*;
 
 @Entity
 @Table(name = "userentity", schema = "public")

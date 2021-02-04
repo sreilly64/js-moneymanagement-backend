@@ -1,8 +1,8 @@
 package com.jszipcoders.moneymanager.controllers;
 
-import com.jszipcoders.moneymanager.responses.AuthenticationResponse;
-import com.jszipcoders.moneymanager.requests.PasswordRequest;
-import com.jszipcoders.moneymanager.entities.UserEntity;
+import com.jszipcoders.moneymanager.controllers.responses.AuthenticationResponse;
+import com.jszipcoders.moneymanager.controllers.requests.PasswordRequest;
+import com.jszipcoders.moneymanager.repositories.entities.UserEntity;
 import com.jszipcoders.moneymanager.services.UserService;
 import com.jszipcoders.moneymanager.util.JwtUtil;
 import org.json.JSONObject;
@@ -50,28 +50,28 @@ public class UserController {
 
     @GetMapping(value = "/users/{userId}")
     public ResponseEntity<UserEntity> findUserById(@PathVariable Long userId){
-        UserEntity userEntity = null;
+        UserEntity userEntity;
         try{
             userEntity = userService.findUserById(userId);
-        }catch(Exception e){
+        }catch(EntityNotFoundException e){
             LOGGER.info(e.getMessage(), e);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         return new ResponseEntity<>(userEntity, HttpStatus.OK);
     }
 
     @PutMapping(value = "/users/{userId}")
     public ResponseEntity<?> updateUserDetails(@PathVariable Long userId, @RequestBody UserEntity updatedUser){
-        UserEntity userEntity = null;
+        UserEntity userEntity;
         try{
             userEntity = userService.updateUserDetails(userId, updatedUser);
-        }catch (IllegalArgumentException e){
+        }catch(IllegalArgumentException e){
             LOGGER.info(e.getMessage(), e);
             JSONObject json = new JSONObject();
             json.put("message", e.getMessage());
             return new ResponseEntity<>(json.toString(), HttpStatus.BAD_REQUEST);
         }
-        catch(Exception e){
+        catch(EntityNotFoundException e){
             LOGGER.info(e.getMessage(), e);
             return ResponseEntity.notFound().build();
         }
@@ -89,7 +89,7 @@ public class UserController {
             json.put("message", e.getMessage());
             return new ResponseEntity<>(json.toString(), HttpStatus.BAD_REQUEST);
         }
-        catch(Exception e){
+        catch(EntityNotFoundException e){
             LOGGER.info(e.getMessage(), e);
             return ResponseEntity.notFound().build();
         }

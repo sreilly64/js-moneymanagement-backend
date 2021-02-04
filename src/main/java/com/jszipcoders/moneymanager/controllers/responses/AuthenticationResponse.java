@@ -1,4 +1,4 @@
-package com.jszipcoders.moneymanager.responses;
+package com.jszipcoders.moneymanager.controllers.responses;
 
 public class AuthenticationResponse {
 

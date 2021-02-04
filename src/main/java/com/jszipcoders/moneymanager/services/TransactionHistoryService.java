@@ -1,19 +1,18 @@
 package com.jszipcoders.moneymanager.services;
 
-import com.jszipcoders.moneymanager.entities.TransactionHistoryEntity;
-import com.jszipcoders.moneymanager.entities.TransactionType;
 import com.jszipcoders.moneymanager.repositories.TransactionHistoryRepository;
+import com.jszipcoders.moneymanager.repositories.entities.TransactionHistoryEntity;
+import com.jszipcoders.moneymanager.repositories.entities.TransactionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionHistoryService {
 
-    private TransactionHistoryRepository transactionHistoryRepository;
+    private final TransactionHistoryRepository transactionHistoryRepository;
 
     @Autowired
     public TransactionHistoryService(TransactionHistoryRepository transactionHistoryRepository) {
@@ -26,7 +25,6 @@ public class TransactionHistoryService {
     }
 
     public List<TransactionHistoryEntity> getTransactions(Long accountNumber) {
-        List<TransactionHistoryEntity> allTransactions = this.transactionHistoryRepository.findAll();
-        return allTransactions.stream().filter(t -> t.getPrimaryAccountNumber() == accountNumber || t.getSecondaryAccountNumber() == accountNumber).collect(Collectors.toList());
+        return this.transactionHistoryRepository.findAllByAccountNumber(accountNumber);
     }
 }

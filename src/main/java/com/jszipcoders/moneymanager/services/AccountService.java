@@ -1,11 +1,11 @@
 package com.jszipcoders.moneymanager.services;
 
 import com.jszipcoders.moneymanager.dto.AccountDTO;
-import com.jszipcoders.moneymanager.entities.AccountEntity;
+import com.jszipcoders.moneymanager.repositories.entities.AccountEntity;
 import com.jszipcoders.moneymanager.exceptions.InsufficientAccountInfoException;
 import com.jszipcoders.moneymanager.exceptions.InsufficientFundsException;
-import com.jszipcoders.moneymanager.responses.TransactionResponse;
-import com.jszipcoders.moneymanager.requests.TransferRequest;
+import com.jszipcoders.moneymanager.controllers.responses.TransactionResponse;
+import com.jszipcoders.moneymanager.controllers.requests.TransferRequest;
 import com.jszipcoders.moneymanager.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.jszipcoders.moneymanager.entities;
+package com.jszipcoders.moneymanager.repositories.entities;
 
 import javax.persistence.*;
 import java.util.Objects;

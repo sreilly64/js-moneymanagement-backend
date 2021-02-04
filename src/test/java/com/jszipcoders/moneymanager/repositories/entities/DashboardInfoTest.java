@@ -1,6 +1,6 @@
-package com.jszipcoders.moneymanager.entities;
+package com.jszipcoders.moneymanager.repositories.entities;
 
-import com.jszipcoders.moneymanager.responses.DashboardInfo;
+import com.jszipcoders.moneymanager.controllers.responses.DashboardInfo;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 

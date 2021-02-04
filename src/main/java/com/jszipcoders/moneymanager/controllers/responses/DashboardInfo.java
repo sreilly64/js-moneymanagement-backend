@@ -1,7 +1,7 @@
-package com.jszipcoders.moneymanager.responses;
+package com.jszipcoders.moneymanager.controllers.responses;
 
-import com.jszipcoders.moneymanager.entities.AccountEntity;
-import com.jszipcoders.moneymanager.entities.UserEntity;
+import com.jszipcoders.moneymanager.repositories.entities.AccountEntity;
+import com.jszipcoders.moneymanager.repositories.entities.UserEntity;
 
 import java.util.List;
 

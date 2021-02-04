@@ -1,6 +1,6 @@
 package com.jszipcoders.moneymanager.dto;
 
-import com.jszipcoders.moneymanager.entities.AccountType;
+import com.jszipcoders.moneymanager.repositories.entities.AccountType;
 
 import java.util.Objects;
 

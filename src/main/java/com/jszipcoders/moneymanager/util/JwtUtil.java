@@ -1,6 +1,6 @@
 package com.jszipcoders.moneymanager.util;
 
-import com.jszipcoders.moneymanager.entities.UserEntity;
+import com.jszipcoders.moneymanager.repositories.entities.UserEntity;
 import com.jszipcoders.moneymanager.services.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -21,8 +21,8 @@ import java.util.function.Function;
 @Service
 public class JwtUtil {
 
-    //private String SECRET_KEY = System.getenv("JWT_KEY");
-    private static final String SECRET_KEY = "supersecret";
+    private static final String SECRET_KEY = System.getenv("JWT_KEY");
+
     @Autowired
     private UserService userService;
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtil.class);

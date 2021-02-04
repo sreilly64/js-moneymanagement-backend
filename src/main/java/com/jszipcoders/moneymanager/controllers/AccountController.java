@@ -1,23 +1,20 @@
 package com.jszipcoders.moneymanager.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jszipcoders.moneymanager.dto.AccountDTO;
-import com.jszipcoders.moneymanager.entities.AccountEntity;
-import com.jszipcoders.moneymanager.entities.TransactionHistoryEntity;
-import com.jszipcoders.moneymanager.entities.TransactionType;
+import com.jszipcoders.moneymanager.repositories.entities.AccountEntity;
+import com.jszipcoders.moneymanager.repositories.entities.TransactionHistoryEntity;
+import com.jszipcoders.moneymanager.repositories.entities.TransactionType;
 import com.jszipcoders.moneymanager.exceptions.InsufficientAccountInfoException;
 import com.jszipcoders.moneymanager.exceptions.InsufficientFundsException;
-import com.jszipcoders.moneymanager.requests.NicknameRequest;
-import com.jszipcoders.moneymanager.responses.NicknameChangeResponse;
-import com.jszipcoders.moneymanager.responses.TransactionResponse;
-import com.jszipcoders.moneymanager.requests.TransferRequest;
+import com.jszipcoders.moneymanager.controllers.requests.NicknameRequest;
+import com.jszipcoders.moneymanager.controllers.responses.NicknameChangeResponse;
+import com.jszipcoders.moneymanager.controllers.responses.TransactionResponse;
+import com.jszipcoders.moneymanager.controllers.requests.TransferRequest;
 import com.jszipcoders.moneymanager.services.AccountService;
 import com.jszipcoders.moneymanager.services.TransactionHistoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,29 +39,15 @@ public class AccountController {
         this.transactionHistoryService = transactionHistoryService;
     }
 
-    @GetMapping(value = "/accounts/{accountNumber}/transactions")
+    @GetMapping(value = "/accounts/{accountNumber}/transactions", produces = "application/json")
     public ResponseEntity<List<TransactionHistoryEntity>> getTransactions(@PathVariable Long accountNumber){
-        List<TransactionHistoryEntity> history = null;
-        try {
-            history = transactionHistoryService.getTransactions(accountNumber);
-        }catch(Exception e){
-            LOGGER.info(e.getMessage(), e);
-            return ResponseEntity.notFound().build();
-        }
+        List<TransactionHistoryEntity> history = transactionHistoryService.getTransactions(accountNumber);
         return ResponseEntity.ok(history);
     }
 
     @GetMapping(value = "/accounts/{accountNumber}", produces = "application/json")
     public ResponseEntity<AccountEntity> findByAccountNumber(@PathVariable Long accountNumber) {
-        AccountEntity accountEntity;
-        try{
-            accountEntity = accountService.findByAccountNumber(accountNumber);
-        }catch(EntityNotFoundException e){
-            LOGGER.info(e.getMessage(), e);
-            return ResponseEntity.badRequest().build();
-        }
-        //ObjectMapper mapper = new ObjectMapper();
-        //String jsonString = mapper.writeValueAsString(accountEntity);
+        AccountEntity accountEntity = accountService.findByAccountNumber(accountNumber);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(accountEntity);
     }
 

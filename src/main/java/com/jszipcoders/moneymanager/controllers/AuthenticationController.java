@@ -1,9 +1,9 @@
 package com.jszipcoders.moneymanager.controllers;
 
-import com.jszipcoders.moneymanager.entities.*;
-import com.jszipcoders.moneymanager.requests.AuthenticationRequest;
-import com.jszipcoders.moneymanager.responses.AuthenticationResponse;
-import com.jszipcoders.moneymanager.responses.DashboardInfo;
+import com.jszipcoders.moneymanager.repositories.entities.*;
+import com.jszipcoders.moneymanager.controllers.requests.AuthenticationRequest;
+import com.jszipcoders.moneymanager.controllers.responses.AuthenticationResponse;
+import com.jszipcoders.moneymanager.controllers.responses.DashboardInfo;
 import com.jszipcoders.moneymanager.services.AccountService;
 import com.jszipcoders.moneymanager.services.UserService;
 import com.jszipcoders.moneymanager.util.JwtUtil;
@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,10 +24,10 @@ import java.util.NoSuchElementException;
 @CrossOrigin
 public class AuthenticationController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-    private UserService userService;
-    private AccountService accountService;
-    private JwtUtil jwtUtil;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
+    private final UserService userService;
+    private final AccountService accountService;
+    private final JwtUtil jwtUtil;
 
     @Autowired
     public AuthenticationController(UserService userService, AccountService accountService, JwtUtil jwtUtil) {
@@ -38,7 +37,7 @@ public class AuthenticationController {
     }
 
     @GetMapping(value = "/users/{userId}/accounts")
-    public ResponseEntity<?> getUserAndAccountsByUserId(@PathVariable Long userId){
+    public ResponseEntity<DashboardInfo> getUserAndAccountsByUserId(@PathVariable Long userId){
         UserEntity user = null;
         try{
             user = userService.findUserById(userId);
@@ -52,7 +51,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/authenticate/password")
-    public ResponseEntity<?> confirmPassword(@RequestBody AuthenticationRequest authRequest) throws Exception {
+    public ResponseEntity<?> confirmPassword(@RequestBody AuthenticationRequest authRequest) {
         Boolean validPassword = null;
         try{
             validPassword = userService.confirmPassword(authRequest.getUsername(), authRequest.getPassword());
@@ -60,13 +59,13 @@ public class AuthenticationController {
             LOGGER.info(e.getMessage(), e);
             JSONObject json = new JSONObject();
             json.put("message", e.getMessage());
-            return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(json.toString());
         }
         return ResponseEntity.ok(validPassword);
     }
 
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> createAuthToken(@RequestBody AuthenticationRequest authRequest) throws Exception {
+    public ResponseEntity<?> createAuthToken(@RequestBody AuthenticationRequest authRequest) {
         UserDetails user = null;
         try{
             user = userService.userLogin(authRequest.getUsername(), authRequest.getPassword());
@@ -74,7 +73,7 @@ public class AuthenticationController {
             LOGGER.info(e.getMessage(), e);
             JSONObject json = new JSONObject();
             json.put("message", e.getMessage());
-            return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(json.toString());
         }
         String jwt = jwtUtil.generateToken(user);
         AuthenticationResponse response = new AuthenticationResponse(jwt, userService.getUserIdByUsername(user.getUsername()));

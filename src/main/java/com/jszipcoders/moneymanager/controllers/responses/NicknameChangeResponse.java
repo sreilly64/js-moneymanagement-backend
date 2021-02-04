@@ -1,6 +1,6 @@
-package com.jszipcoders.moneymanager.responses;
+package com.jszipcoders.moneymanager.controllers.responses;
 
-import com.jszipcoders.moneymanager.requests.NicknameRequest;
+import com.jszipcoders.moneymanager.controllers.requests.NicknameRequest;
 
 public class NicknameChangeResponse {
 

@@ -1,7 +1,7 @@
 package com.jszipcoders.moneymanager.services;
 
-import com.jszipcoders.moneymanager.requests.PasswordRequest;
-import com.jszipcoders.moneymanager.entities.UserEntity;
+import com.jszipcoders.moneymanager.controllers.requests.PasswordRequest;
+import com.jszipcoders.moneymanager.repositories.entities.UserEntity;
 import com.jszipcoders.moneymanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService{
@@ -47,11 +48,22 @@ public class UserService implements UserDetailsService{
     }
 
     public UserEntity findUserById(Long userId) {
-        return userRepo.findById(userId).get();
+        Optional<UserEntity> optional = userRepo.findById(userId);
+        if(optional.isPresent()){
+            return optional.get();
+        }else{
+            throw new EntityNotFoundException("User not found.");
+        }
     }
 
     public UserEntity updateUserDetails(Long userId, UserEntity updatedUser) {
-        UserEntity userEntity = userRepo.findById(userId).get();
+        Optional<UserEntity> optional = userRepo.findById(userId);
+        UserEntity userEntity;
+        if(optional.isPresent()){
+            userEntity = optional.get();
+        }else{
+            throw new EntityNotFoundException("User not found.");
+        }
 
         userEntity.setFirstName(updatedUser.getFirstName());
         userEntity.setLastName(updatedUser.getLastName());

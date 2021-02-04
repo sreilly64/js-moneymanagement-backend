@@ -1,25 +1,22 @@
 package com.jszipcoders.moneymanager.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jszipcoders.moneymanager.entities.UserEntity;
+import com.jszipcoders.moneymanager.repositories.entities.UserEntity;
 import com.jszipcoders.moneymanager.services.UserService;
 import com.jszipcoders.moneymanager.util.JwtUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -109,10 +106,10 @@ public class UserControllerTest {
 
     @Test
     public void findUserByIdFail() throws Exception {
-        when(userService.findUserById(1L)).thenThrow(new NoSuchElementException("no such value exists"));
+        when(userService.findUserById(1L)).thenThrow(new EntityNotFoundException("no such value exists"));
 
         mockMvc.perform(get("/api/users/{user_id}", 1))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
 
         verify(userService, times(1)).findUserById(1L);
         verifyNoMoreInteractions(userService);
@@ -138,7 +135,7 @@ public class UserControllerTest {
     public void updateUserDetailsFail() throws Exception {
         UserEntity user = new UserEntity(1L, "Shane", "Reilly", "123-45-6789", "4 Street Road", "email@gmail.com", "867-5309", "CodingRulez", "secretPassword");
 
-        when(userService.updateUserDetails(1L,user)).thenThrow(new NoSuchElementException("no such user"));
+        when(userService.updateUserDetails(1L,user)).thenThrow(new EntityNotFoundException("no such user"));
 
         mockMvc.perform(
                 put("/api/users/{user_id}", user.getUserId())
