@@ -2,11 +2,11 @@ package com.jszipcoders.moneymanager.models;
 
 import java.io.Serializable;
 
-public class ErrorMessage implements Serializable {
+public class ErrorResponse implements Serializable {
 
-    private String message;
+    private final String message;
 
-    public ErrorMessage(String message){
+    public ErrorResponse(String message){
         this.message = message;
     }
 

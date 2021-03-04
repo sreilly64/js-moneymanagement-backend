@@ -1,12 +1,12 @@
 package com.jszipcoders.moneymanager.services;
 
+import com.jszipcoders.moneymanager.controllers.requests.TransferRequest;
+import com.jszipcoders.moneymanager.controllers.responses.TransactionResponse;
 import com.jszipcoders.moneymanager.dto.AccountDTO;
-import com.jszipcoders.moneymanager.repositories.entities.AccountEntity;
 import com.jszipcoders.moneymanager.exceptions.InsufficientAccountInfoException;
 import com.jszipcoders.moneymanager.exceptions.InsufficientFundsException;
-import com.jszipcoders.moneymanager.controllers.responses.TransactionResponse;
-import com.jszipcoders.moneymanager.controllers.requests.TransferRequest;
 import com.jszipcoders.moneymanager.repositories.AccountRepository;
+import com.jszipcoders.moneymanager.repositories.entities.AccountEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -37,8 +36,7 @@ public class AccountService {
     }
 
     public List<AccountEntity> findAllAccountsByUserId(Long userId) {
-        List<AccountEntity> listOfAccounts = this.accountRepository.findAll();
-        return listOfAccounts.stream().filter(a -> a.getUserId().equals(userId)).collect(Collectors.toList());
+        return this.accountRepository.findAllByUserId(userId);
     }
 
     public AccountEntity createAccount(AccountDTO newAccount) throws InsufficientAccountInfoException {

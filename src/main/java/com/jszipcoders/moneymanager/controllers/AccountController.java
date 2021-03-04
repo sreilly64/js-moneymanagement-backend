@@ -40,27 +40,21 @@ public class AccountController {
     }
 
     @GetMapping(value = "/accounts/{accountNumber}/transactions", produces = "application/json")
-    public ResponseEntity<List<TransactionHistoryEntity>> getTransactions(@PathVariable Long accountNumber){
+    public ResponseEntity<List<TransactionHistoryEntity>> getTransactionsByAccountNumber(@PathVariable Long accountNumber){
         List<TransactionHistoryEntity> history = transactionHistoryService.getTransactions(accountNumber);
         return ResponseEntity.ok(history);
     }
 
     @GetMapping(value = "/accounts/{accountNumber}", produces = "application/json")
-    public ResponseEntity<AccountEntity> findByAccountNumber(@PathVariable Long accountNumber) {
+    public ResponseEntity<AccountEntity> findAccountByAccountNumber(@PathVariable Long accountNumber) {
         AccountEntity accountEntity = accountService.findByAccountNumber(accountNumber);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(accountEntity);
     }
 
-    @GetMapping(value = "/accounts/user/{userId}")
+    @GetMapping(value = "/accounts/user/{userId}", produces = "application/json")
     public ResponseEntity<List<AccountEntity>> findAllAccountsByUserId(@PathVariable Long userId) {
-       List<AccountEntity> accountEntityList;
-        try{
-            accountEntityList = accountService.findAllAccountsByUserId(userId);
-        } catch(Exception e){
-            LOGGER.info(e.getMessage(), e);
-            return ResponseEntity.badRequest().build();
-        }
-        return new ResponseEntity<>(accountEntityList, HttpStatus.OK);
+        List<AccountEntity> accountEntityList = accountService.findAllAccountsByUserId(userId);
+        return ResponseEntity.ok(accountEntityList);
     }
 
     @PutMapping(value = "/accounts/{accountNumber}/deposit/{amount}", produces = "application/json")
